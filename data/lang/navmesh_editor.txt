@@ -1,0 +1,392 @@
+[en]
+; ============================================================================
+; NavMesh Editor - English
+; ============================================================================
+
+; General
+NAVEDIT_NO_NAV_FILE = [NavEdit] No .nav file - Starting empty navmesh for editing.
+NAVEDIT_EDITOR_DISABLED = [NavEdit] Editor DISABLED.
+
+; Main Menu
+NAVEDIT_MENU_TITLE = [NavMesh Editor]
+NAVEDIT_MENU_AREA = Area
+NAVEDIT_MENU_MARKED = Marked
+NAVEDIT_MENU_NONE = None
+NAVEDIT_MENU_MARK_AREA = Mark current area
+NAVEDIT_MENU_UNMARK_AREA = Unmark area
+NAVEDIT_MENU_GOTO_MARKED = Go to marked area
+NAVEDIT_MENU_EDIT_ATTRS = Edit Attributes
+NAVEDIT_MENU_EDIT_CONNS = Edit Connections
+NAVEDIT_MENU_EDIT_CORNERS = Edit Corners
+NAVEDIT_MENU_ADVANCED = Advanced Options
+NAVEDIT_MENU_AREA_INFO = Area info
+NAVEDIT_MENU_CLOSE = Close
+NAVEDIT_MENU_BACK = Back
+
+; Mark/Unmark
+NAVEDIT_AREA_MARKED = [NavEdit] Area %d marked.
+NAVEDIT_NO_AREA_SELECTED = [NavEdit] No area selected.
+NAVEDIT_AREA_UNMARKED = [NavEdit] Area unmarked.
+
+; Attributes Menu
+NAVEDIT_ATTRS_TITLE = [Attributes]
+NAVEDIT_SELECT_AREA_FIRST = [NavEdit] Select an area first.
+NAVEDIT_ATTR_CROUCH = CROUCH (Crouch)
+NAVEDIT_ATTR_JUMP = JUMP (Jump)
+NAVEDIT_ATTR_PRECISE = PRECISE (Precise)
+NAVEDIT_ATTR_NO_JUMP = NO_JUMP (No jumping)
+NAVEDIT_ATTR_ENABLED = [NavEdit] %s ENABLED
+NAVEDIT_ATTR_DISABLED = [NavEdit] %s DISABLED
+
+; Connections Menu
+NAVEDIT_CONNS_TITLE = [Connections]
+NAVEDIT_CONNS_SELECTED = Selected
+NAVEDIT_CONNS_MARKED = Marked
+NAVEDIT_CONNS_CONNECT = Connect
+NAVEDIT_CONNS_CONNECT_BI = Connect Bidirectional
+NAVEDIT_CONNS_DISCONNECT = Disconnect
+NAVEDIT_CONNS_DISCONNECT_BI = Disconnect Bidirectional
+NAVEDIT_CONNS_VIEW = View area connections
+NAVEDIT_NEED_SELECT_MARK = [NavEdit] You need to select and mark areas.
+NAVEDIT_CANT_CONNECT_SELF = [NavEdit] You cannot connect an area to itself.
+NAVEDIT_CONNECTED = [NavEdit] Connected: %d -> %d
+NAVEDIT_CONNECTED_BI = [NavEdit] Bidirectional connected: %d <-> %d
+NAVEDIT_DISCONNECTED = [NavEdit] Disconnected: %d -> %d
+NAVEDIT_DISCONNECTED_BI = [NavEdit] Bidirectional disconnected: %d <-> %d
+
+; Corners Menu
+NAVEDIT_CORNERS_TITLE = [Corners]
+NAVEDIT_CORNER_SELECTED = Corner
+NAVEDIT_CORNER_NW = Northwest (NW)
+NAVEDIT_CORNER_NE = Northeast (NE)
+NAVEDIT_CORNER_SE = Southeast (SE)
+NAVEDIT_CORNER_SW = Southwest (SW)
+NAVEDIT_CORNER_NW_SHORT = Northwest
+NAVEDIT_CORNER_NE_SHORT = Northeast
+NAVEDIT_CORNER_SE_SHORT = Southeast
+NAVEDIT_CORNER_SW_SHORT = Southwest
+NAVEDIT_SELECT_NEXT_CORNER = Select next corner
+NAVEDIT_RAISE_CORNER_5 = Raise corner (+5 units)
+NAVEDIT_RAISE_CORNER_1 = Raise corner (+1 unit)
+NAVEDIT_LOWER_CORNER_1 = Lower corner (-1 unit)
+NAVEDIT_LOWER_CORNER_5 = Lower corner (-5 units)
+NAVEDIT_CORNER_CHANGED = [NavEdit] Corner selected: %s
+NAVEDIT_CORNER_Z = [NavEdit] Corner %s: Z = %.1f
+
+; Advanced Menu
+NAVEDIT_ADV_TITLE = [Advanced Options]
+NAVEDIT_ADV_CREATE_END = Finish area creation
+NAVEDIT_ADV_CREATE_START = Start area creation
+NAVEDIT_ADV_DELETE = Delete selected area
+NAVEDIT_ADV_SPLIT = Split area (Split)
+NAVEDIT_ADV_MERGE = Merge areas (Merge)
+NAVEDIT_ADV_SPLICE = Create intermediate area (Splice)
+NAVEDIT_ADV_SAVE = Save NavMesh
+
+; Area Operations
+NAVEDIT_AREA_DELETED = [NavEdit] Area %d deleted.
+NAVEDIT_DELETE_ERROR = [NavEdit] Error deleting area.
+NAVEDIT_AREA_SPLIT = [NavEdit] Area split. New area: %d
+NAVEDIT_SPLIT_ERROR = [NavEdit] Could not split the area.
+NAVEDIT_AREAS_MERGED = [NavEdit] Areas merged into area %d
+NAVEDIT_MERGE_ERROR = [NavEdit] Could not merge the areas.
+NAVEDIT_AREA_SPLICED = [NavEdit] Intermediate area created: %d
+NAVEDIT_SPLICE_ERROR = [NavEdit] Could not create intermediate area.
+NAVEDIT_SELECT_MARK_DIFF = [NavEdit] Select and mark two different areas.
+NAVEDIT_SAVED = [NavEdit] NavMesh saved to maps/%s.nav
+NAVEDIT_SAVE_ERROR = [NavEdit] Error saving NavMesh.
+
+; Area Creation
+NAVEDIT_CREATE_STARTED = [NavEdit] Creation started. Point to the opposite corner and open the menu to finish.
+NAVEDIT_AREA_CREATED = [NavEdit] Area %d created from (%.0f, %.0f) to (%.0f, %.0f)
+NAVEDIT_CREATE_ERROR = [NavEdit] Error creating area.
+
+; Area Info
+NAVEDIT_INFO_SHOWN = [NavEdit] Area info shown in console.
+NAVEDIT_INFO_NO_PLACE = No place
+NAVEDIT_INFO_CENTER = Center
+NAVEDIT_INFO_SIZE = Size
+NAVEDIT_INFO_PLACE = Place
+NAVEDIT_INFO_ATTRS = Attributes
+NAVEDIT_INFO_CONNS = Connections %s
+
+; Warp
+NAVEDIT_NO_MARKED_AREA = [NavEdit] No marked area.
+NAVEDIT_TELEPORTED = [NavEdit] Teleported to area %d.
+
+; Connections Info
+NAVEDIT_CONNS_SHOWN = [NavEdit] Connections shown in console.
+
+; HUD
+NAVEDIT_HUD_MODE = Mode
+NAVEDIT_HUD_AREA = Area
+NAVEDIT_HUD_MARKED = Marked
+NAVEDIT_HUD_ATTRS_NONE = None
+
+; Directions
+NAVEDIT_DIR_NORTH = North
+NAVEDIT_DIR_EAST = East
+NAVEDIT_DIR_SOUTH = South
+NAVEDIT_DIR_WEST = West
+
+[es]
+; ============================================================================
+; NavMesh Editor - Spanish
+; ============================================================================
+
+; General
+NAVEDIT_NO_NAV_FILE = [NavEdit] No hay archivo .nav - Iniciando navmesh vacio para edicion.
+NAVEDIT_EDITOR_DISABLED = [NavEdit] Editor DESACTIVADO.
+
+; Main Menu
+NAVEDIT_MENU_TITLE = [NavMesh Editor]
+NAVEDIT_MENU_AREA = Area
+NAVEDIT_MENU_MARKED = Marcada
+NAVEDIT_MENU_NONE = Ninguna
+NAVEDIT_MENU_MARK_AREA = Marcar area actual
+NAVEDIT_MENU_UNMARK_AREA = Desmarcar area
+NAVEDIT_MENU_GOTO_MARKED = Ir a area marcada
+NAVEDIT_MENU_EDIT_ATTRS = Editar Atributos
+NAVEDIT_MENU_EDIT_CONNS = Editar Conexiones
+NAVEDIT_MENU_EDIT_CORNERS = Editar Esquinas
+NAVEDIT_MENU_ADVANCED = Opciones Avanzadas
+NAVEDIT_MENU_AREA_INFO = Info del area
+NAVEDIT_MENU_CLOSE = Cerrar
+NAVEDIT_MENU_BACK = Volver
+
+; Mark/Unmark
+NAVEDIT_AREA_MARKED = [NavEdit] Area %d marcada.
+NAVEDIT_NO_AREA_SELECTED = [NavEdit] No hay area seleccionada.
+NAVEDIT_AREA_UNMARKED = [NavEdit] Area desmarcada.
+
+; Attributes Menu
+NAVEDIT_ATTRS_TITLE = [Atributos]
+NAVEDIT_SELECT_AREA_FIRST = [NavEdit] Selecciona un area primero.
+NAVEDIT_ATTR_CROUCH = CROUCH (Agacharse)
+NAVEDIT_ATTR_JUMP = JUMP (Saltar)
+NAVEDIT_ATTR_PRECISE = PRECISE (Preciso)
+NAVEDIT_ATTR_NO_JUMP = NO_JUMP (Sin saltos)
+NAVEDIT_ATTR_ENABLED = [NavEdit] %s ACTIVADO
+NAVEDIT_ATTR_DISABLED = [NavEdit] %s DESACTIVADO
+
+; Connections Menu
+NAVEDIT_CONNS_TITLE = [Conexiones]
+NAVEDIT_CONNS_SELECTED = Seleccionada
+NAVEDIT_CONNS_MARKED = Marcada
+NAVEDIT_CONNS_CONNECT = Conectar
+NAVEDIT_CONNS_CONNECT_BI = Conectar Bidireccional
+NAVEDIT_CONNS_DISCONNECT = Desconectar
+NAVEDIT_CONNS_DISCONNECT_BI = Desconectar Bidireccional
+NAVEDIT_CONNS_VIEW = Ver conexiones del area
+NAVEDIT_NEED_SELECT_MARK = [NavEdit] Necesitas seleccionar y marcar areas.
+NAVEDIT_CANT_CONNECT_SELF = [NavEdit] No puedes conectar un area consigo misma.
+NAVEDIT_CONNECTED = [NavEdit] Conectado: %d -> %d
+NAVEDIT_CONNECTED_BI = [NavEdit] Conectado bidireccional: %d <-> %d
+NAVEDIT_DISCONNECTED = [NavEdit] Desconectado: %d -> %d
+NAVEDIT_DISCONNECTED_BI = [NavEdit] Desconectado bidireccional: %d <-> %d
+
+; Corners Menu
+NAVEDIT_CORNERS_TITLE = [Esquinas]
+NAVEDIT_CORNER_SELECTED = Esquina
+NAVEDIT_CORNER_NW = Noroeste (NW)
+NAVEDIT_CORNER_NE = Noreste (NE)
+NAVEDIT_CORNER_SE = Sureste (SE)
+NAVEDIT_CORNER_SW = Suroeste (SW)
+NAVEDIT_CORNER_NW_SHORT = Noroeste
+NAVEDIT_CORNER_NE_SHORT = Noreste
+NAVEDIT_CORNER_SE_SHORT = Sureste
+NAVEDIT_CORNER_SW_SHORT = Suroeste
+NAVEDIT_SELECT_NEXT_CORNER = Seleccionar siguiente esquina
+NAVEDIT_RAISE_CORNER_5 = Subir esquina (+5 unidades)
+NAVEDIT_RAISE_CORNER_1 = Subir esquina (+1 unidad)
+NAVEDIT_LOWER_CORNER_1 = Bajar esquina (-1 unidad)
+NAVEDIT_LOWER_CORNER_5 = Bajar esquina (-5 unidades)
+NAVEDIT_CORNER_CHANGED = [NavEdit] Esquina seleccionada: %s
+NAVEDIT_CORNER_Z = [NavEdit] Esquina %s: Z = %.1f
+
+; Advanced Menu
+NAVEDIT_ADV_TITLE = [Opciones Avanzadas]
+NAVEDIT_ADV_CREATE_END = Crear final del area
+NAVEDIT_ADV_CREATE_START = Crear inicio del area
+NAVEDIT_ADV_DELETE = Eliminar area seleccionada
+NAVEDIT_ADV_SPLIT = Dividir area (Split)
+NAVEDIT_ADV_MERGE = Fusionar areas (Merge)
+NAVEDIT_ADV_SPLICE = Crear area intermedia (Splice)
+NAVEDIT_ADV_SAVE = Guardar NavMesh
+
+; Area Operations
+NAVEDIT_AREA_DELETED = [NavEdit] Area %d eliminada.
+NAVEDIT_DELETE_ERROR = [NavEdit] Error al eliminar area.
+NAVEDIT_AREA_SPLIT = [NavEdit] Area dividida. Nueva area: %d
+NAVEDIT_SPLIT_ERROR = [NavEdit] No se pudo dividir el area.
+NAVEDIT_AREAS_MERGED = [NavEdit] Areas fusionadas en area %d
+NAVEDIT_MERGE_ERROR = [NavEdit] No se pudieron fusionar las areas.
+NAVEDIT_AREA_SPLICED = [NavEdit] Area intermedia creada: %d
+NAVEDIT_SPLICE_ERROR = [NavEdit] No se pudo crear area intermedia.
+NAVEDIT_SELECT_MARK_DIFF = [NavEdit] Selecciona y marca dos areas diferentes.
+NAVEDIT_SAVED = [NavEdit] NavMesh guardado en maps/%s.nav
+NAVEDIT_SAVE_ERROR = [NavEdit] Error al guardar NavMesh.
+
+; Area Creation
+NAVEDIT_CREATE_STARTED = [NavEdit] Creacion iniciada. Apunta a la esquina opuesta y abre el menu para finalizar.
+NAVEDIT_AREA_CREATED = [NavEdit] Area %d creada de (%.0f, %.0f) a (%.0f, %.0f)
+NAVEDIT_CREATE_ERROR = [NavEdit] Error al crear area.
+
+; Area Info
+NAVEDIT_INFO_SHOWN = [NavEdit] Info del area mostrada en consola.
+NAVEDIT_INFO_NO_PLACE = Sin lugar
+NAVEDIT_INFO_CENTER = Centro
+NAVEDIT_INFO_SIZE = Tamano
+NAVEDIT_INFO_PLACE = Lugar
+NAVEDIT_INFO_ATTRS = Atributos
+NAVEDIT_INFO_CONNS = Conexiones %s
+
+; Warp
+NAVEDIT_NO_MARKED_AREA = [NavEdit] No hay area marcada.
+NAVEDIT_TELEPORTED = [NavEdit] Teleportado al area %d.
+
+; Connections Info
+NAVEDIT_CONNS_SHOWN = [NavEdit] Conexiones mostradas en consola.
+
+; HUD
+NAVEDIT_HUD_MODE = Modo
+NAVEDIT_HUD_AREA = Area
+NAVEDIT_HUD_MARKED = Marcada
+NAVEDIT_HUD_ATTRS_NONE = Ninguno
+
+; Directions
+NAVEDIT_DIR_NORTH = Norte
+NAVEDIT_DIR_EAST = Este
+NAVEDIT_DIR_SOUTH = Sur
+NAVEDIT_DIR_WEST = Oeste
+
+[ru]
+; ============================================================================
+; NavMesh Editor - Russian
+; ============================================================================
+
+; General
+NAVEDIT_NO_NAV_FILE = [NavEdit] Нет файла .nav - Создание пустого navmesh для редактирования.
+NAVEDIT_EDITOR_DISABLED = [NavEdit] Редактор ОТКЛЮЧЕН.
+
+; Main Menu
+NAVEDIT_MENU_TITLE = [NavMesh Редактор]
+NAVEDIT_MENU_AREA = Зона
+NAVEDIT_MENU_MARKED = Отмечена
+NAVEDIT_MENU_NONE = Нет
+NAVEDIT_MENU_MARK_AREA = Отметить текущую зону
+NAVEDIT_MENU_UNMARK_AREA = Снять отметку
+NAVEDIT_MENU_GOTO_MARKED = Перейти к отмеченной зоне
+NAVEDIT_MENU_EDIT_ATTRS = Редактировать атрибуты
+NAVEDIT_MENU_EDIT_CONNS = Редактировать связи
+NAVEDIT_MENU_EDIT_CORNERS = Редактировать углы
+NAVEDIT_MENU_ADVANCED = Дополнительные опции
+NAVEDIT_MENU_AREA_INFO = Информация о зоне
+NAVEDIT_MENU_CLOSE = Закрыть
+NAVEDIT_MENU_BACK = Назад
+
+; Mark/Unmark
+NAVEDIT_AREA_MARKED = [NavEdit] Зона %d отмечена.
+NAVEDIT_NO_AREA_SELECTED = [NavEdit] Зона не выбрана.
+NAVEDIT_AREA_UNMARKED = [NavEdit] Отметка снята.
+
+; Attributes Menu
+NAVEDIT_ATTRS_TITLE = [Атрибуты]
+NAVEDIT_SELECT_AREA_FIRST = [NavEdit] Сначала выберите зону.
+NAVEDIT_ATTR_CROUCH = CROUCH (Присесть)
+NAVEDIT_ATTR_JUMP = JUMP (Прыжок)
+NAVEDIT_ATTR_PRECISE = PRECISE (Точный)
+NAVEDIT_ATTR_NO_JUMP = NO_JUMP (Без прыжков)
+NAVEDIT_ATTR_ENABLED = [NavEdit] %s ВКЛЮЧЕН
+NAVEDIT_ATTR_DISABLED = [NavEdit] %s ОТКЛЮЧЕН
+
+; Connections Menu
+NAVEDIT_CONNS_TITLE = [Связи]
+NAVEDIT_CONNS_SELECTED = Выбрана
+NAVEDIT_CONNS_MARKED = Отмечена
+NAVEDIT_CONNS_CONNECT = Соединить
+NAVEDIT_CONNS_CONNECT_BI = Соединить двусторонне
+NAVEDIT_CONNS_DISCONNECT = Разъединить
+NAVEDIT_CONNS_DISCONNECT_BI = Разъединить двусторонне
+NAVEDIT_CONNS_VIEW = Показать связи зоны
+NAVEDIT_NEED_SELECT_MARK = [NavEdit] Нужно выбрать и отметить зоны.
+NAVEDIT_CANT_CONNECT_SELF = [NavEdit] Нельзя соединить зону с самой собой.
+NAVEDIT_CONNECTED = [NavEdit] Соединено: %d -> %d
+NAVEDIT_CONNECTED_BI = [NavEdit] Двустороннее соединение: %d <-> %d
+NAVEDIT_DISCONNECTED = [NavEdit] Разъединено: %d -> %d
+NAVEDIT_DISCONNECTED_BI = [NavEdit] Двустороннее разъединение: %d <-> %d
+
+; Corners Menu
+NAVEDIT_CORNERS_TITLE = [Углы]
+NAVEDIT_CORNER_SELECTED = Угол
+NAVEDIT_CORNER_NW = Северо-запад (NW)
+NAVEDIT_CORNER_NE = Северо-восток (NE)
+NAVEDIT_CORNER_SE = Юго-восток (SE)
+NAVEDIT_CORNER_SW = Юго-запад (SW)
+NAVEDIT_CORNER_NW_SHORT = Северо-запад
+NAVEDIT_CORNER_NE_SHORT = Северо-восток
+NAVEDIT_CORNER_SE_SHORT = Юго-восток
+NAVEDIT_CORNER_SW_SHORT = Юго-запад
+NAVEDIT_SELECT_NEXT_CORNER = Выбрать следующий угол
+NAVEDIT_RAISE_CORNER_5 = Поднять угол (+5 единиц)
+NAVEDIT_RAISE_CORNER_1 = Поднять угол (+1 единица)
+NAVEDIT_LOWER_CORNER_1 = Опустить угол (-1 единица)
+NAVEDIT_LOWER_CORNER_5 = Опустить угол (-5 единиц)
+NAVEDIT_CORNER_CHANGED = [NavEdit] Выбран угол: %s
+NAVEDIT_CORNER_Z = [NavEdit] Угол %s: Z = %.1f
+
+; Advanced Menu
+NAVEDIT_ADV_TITLE = [Дополнительные опции]
+NAVEDIT_ADV_CREATE_END = Завершить создание зоны
+NAVEDIT_ADV_CREATE_START = Начать создание зоны
+NAVEDIT_ADV_DELETE = Удалить выбранную зону
+NAVEDIT_ADV_SPLIT = Разделить зону (Split)
+NAVEDIT_ADV_MERGE = Объединить зоны (Merge)
+NAVEDIT_ADV_SPLICE = Создать промежуточную зону (Splice)
+NAVEDIT_ADV_SAVE = Сохранить NavMesh
+
+; Area Operations
+NAVEDIT_AREA_DELETED = [NavEdit] Зона %d удалена.
+NAVEDIT_DELETE_ERROR = [NavEdit] Ошибка при удалении зоны.
+NAVEDIT_AREA_SPLIT = [NavEdit] Зона разделена. Новая зона: %d
+NAVEDIT_SPLIT_ERROR = [NavEdit] Не удалось разделить зону.
+NAVEDIT_AREAS_MERGED = [NavEdit] Зоны объединены в зону %d
+NAVEDIT_MERGE_ERROR = [NavEdit] Не удалось объединить зоны.
+NAVEDIT_AREA_SPLICED = [NavEdit] Промежуточная зона создана: %d
+NAVEDIT_SPLICE_ERROR = [NavEdit] Не удалось создать промежуточную зону.
+NAVEDIT_SELECT_MARK_DIFF = [NavEdit] Выберите и отметьте две разные зоны.
+NAVEDIT_SAVED = [NavEdit] NavMesh сохранен в maps/%s.nav
+NAVEDIT_SAVE_ERROR = [NavEdit] Ошибка при сохранении NavMesh.
+
+; Area Creation
+NAVEDIT_CREATE_STARTED = [NavEdit] Создание начато. Наведите на противоположный угол и откройте меню для завершения.
+NAVEDIT_AREA_CREATED = [NavEdit] Зона %d создана от (%.0f, %.0f) до (%.0f, %.0f)
+NAVEDIT_CREATE_ERROR = [NavEdit] Ошибка при создании зоны.
+
+; Area Info
+NAVEDIT_INFO_SHOWN = [NavEdit] Информация о зоне показана в консоли.
+NAVEDIT_INFO_NO_PLACE = Нет места
+NAVEDIT_INFO_CENTER = Центр
+NAVEDIT_INFO_SIZE = Размер
+NAVEDIT_INFO_PLACE = Место
+NAVEDIT_INFO_ATTRS = Атрибуты
+NAVEDIT_INFO_CONNS = Связи %s
+
+; Warp
+NAVEDIT_NO_MARKED_AREA = [NavEdit] Нет отмеченной зоны.
+NAVEDIT_TELEPORTED = [NavEdit] Телепортирован к зоне %d.
+
+; Connections Info
+NAVEDIT_CONNS_SHOWN = [NavEdit] Связи показаны в консоли.
+
+; HUD
+NAVEDIT_HUD_MODE = Режим
+NAVEDIT_HUD_AREA = Зона
+NAVEDIT_HUD_MARKED = Отмечена
+NAVEDIT_HUD_ATTRS_NONE = Нет
+
+; Directions
+NAVEDIT_DIR_NORTH = Север
+NAVEDIT_DIR_EAST = Восток
+NAVEDIT_DIR_SOUTH = Юг
+NAVEDIT_DIR_WEST = Запад
