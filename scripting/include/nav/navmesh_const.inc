@@ -1,13 +1,3 @@
-/**
- * navmesh_const.inc
- * 
- * Constants, enumerations and structures for the navigation system
- * Based on ReGameDLL_CS nav.h / nav_area.h
- * 
- * @author Goodbay
- * @version 2.0
- */
-
 #if defined _navmesh_const_included
     #endinput
 #endif
