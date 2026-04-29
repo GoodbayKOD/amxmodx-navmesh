@@ -24,7 +24,7 @@
 // Special values
 // ============================================================================
 
-#define Invalid_Area        -1
+#define INVALID_NAV_AREA    -1
 #define UNDEFINED_PLACE     0
 #define ANY_PLACE           0xFFFF
 
@@ -41,28 +41,28 @@
 // Navigation constants (based on ReGameDLL_CS)
 // ============================================================================
 
-stock Float:GENERATION_STEP_SIZE    = 25.0;     // Step size for grid generation
-stock Float:STEP_HEIGHT             = 18.0;     // Maximum height to walk without jumping
-stock Float:JUMP_HEIGHT             = 41.8;     // Maximum height to jump
-stock Float:JUMP_CROUCH_HEIGHT      = 58.0;     // Maximum height to jump while crouching
-stock Float:MAX_SLOPE               = 1.4;      // Maximum navigable slope
-stock Float:MAX_UNIT_Z_SLOPE        = 0.7;      // Maximum Z component of normal
+const Float:GENERATION_STEP_SIZE    = 25.0;     // Step size for grid generation
+const Float:STEP_HEIGHT             = 18.0;     // Maximum height to walk without jumping
+const Float:JUMP_HEIGHT             = 41.8;     // Maximum height to jump
+const Float:JUMP_CROUCH_HEIGHT      = 58.0;     // Maximum height to jump while crouching
+const Float:MAX_SLOPE               = 1.4;      // Maximum navigable slope
+const Float:MAX_UNIT_Z_SLOPE        = 0.7;      // Maximum Z component of normal
 
 // ============================================================================
 // Player dimensions
 // ============================================================================
 
-stock Float:BOT_RADIUS              = 10.0;     // Bot circular radius
-stock Float:DEATH_DROP              = 200.0;    // Fatal fall height
-stock Float:HALF_HUMAN_WIDTH        = 16.0;
-stock Float:HALF_HUMAN_HEIGHT       = 36.0;
-stock Float:HUMAN_HEIGHT            = 72.0;
+const Float:BOT_RADIUS              = 10.0;     // Bot circular radius
+const Float:DEATH_DROP              = 200.0;    // Fatal fall height
+const Float:HALF_HUMAN_WIDTH        = 16.0;
+const Float:HALF_HUMAN_HEIGHT       = 36.0;
+const Float:HUMAN_HEIGHT            = 72.0;
 
 // ============================================================================
 // Spatial grid
 // ============================================================================
 
-stock Float:GRID_CELL_SIZE          = 300.0;    // Size of each grid cell
+const Float:GRID_CELL_SIZE          = 300.0;    // Size of each grid cell
 
 // ============================================================================
 // Walk-through flags
@@ -96,12 +96,7 @@ enum NavAttributeType
     NAV_ATTR_CROUCH     = 0x01,     // Must crouch to use this area
     NAV_ATTR_JUMP       = 0x02,     // Must jump to traverse this area
     NAV_ATTR_PRECISE    = 0x04,     // Do not adjust for obstacles, move precisely
-    NAV_ATTR_NO_JUMP    = 0x08,     //禁止 discontinuity jumps
-
-    // Custom ones, for third party plugins
-    NAV_ATTR_CUSTOM_1   = 0x10,
-    NAV_ATTR_CUSTOM_2   = 0x20,
-    NAV_ATTR_CUSTOM_3   = 0x40
+    NAV_ATTR_NO_JUMP    = 0x08      //禁止 discontinuity jumps
 };
 
 /**
@@ -132,16 +127,6 @@ enum NavTraverseType
     NAV_TRAVERSE_JUMP,
     
     NUM_NAV_TRAVERSE_TYPES
-};
-
-/**
- * Result of UpdatePathMovement (mirrors CCSBot::PathResult)
- */
-enum NavPathResult
-{
-    NAV_PATH_FAILURE = 0,
-    NAV_PATH_PROGRESSING,
-    NAV_PATH_END_OF_PATH
 };
 
 /**
