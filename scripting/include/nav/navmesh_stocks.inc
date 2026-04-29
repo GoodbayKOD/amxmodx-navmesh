@@ -1,3 +1,12 @@
+/**
+ * navmesh_stocks.inc
+ * 
+ * Helper functions (stocks) for the navigation system
+ * 
+ * @author Goodbay
+ * @version 1.0
+ */
+
 #if defined _navmesh_stocks_included
     #endinput
 #endif
