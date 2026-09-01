@@ -5,6 +5,7 @@
 
 #include <nav/navmesh_const>
 #include <nav/navmesh_stocks>
+#include <nav/navmesh_botpath>
 
 /**
  * Loads the navigation file for the current map

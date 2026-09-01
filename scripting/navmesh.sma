@@ -41,6 +41,9 @@ new bool:g_bNavLoaded;  // Navmesh load state
 new g_iNavAreaCount;    // Number of loaded areas
 new g_iNextAreaID = 1;  // Next available ID for new areas
 
+#define NAVMESH_BOTPATH_INTERNAL
+#include <nav/navmesh_botpath>
+
 // ============================================================================
 // Plugin Data
 // ============================================================================
@@ -99,15 +102,20 @@ public plugin_natives()
     register_native("Navmesh_SplitArea", "native_split_area");
     register_native("Navmesh_MergeAreas", "native_merge_areas");
     register_native("Navmesh_SpliceAreas", "native_splice_areas");
+    
+    NavmeshBotPath_RegisterNatives();
 }
 
 public plugin_init()
 {
     register_plugin("Navmesh System", "1.0", "Goodbay");
+    NavmeshBotPath_PluginInit();
 }
 
 public plugin_end()
 {
+    NavmeshBotPath_PluginEnd();
+    
     // Just in case is loaded
     if(g_bNavLoaded)
         UnloadInternal();
@@ -339,6 +347,7 @@ public bool:native_build_path_from_area(const pPluginID, const iParams)
     new iStartArea      = get_param(arg_startarea);
     new iGoalArea       = get_param(arg_goalarea);
     new Array:aPathOut  = Array:get_param(arg_pathout);
+    new NavRouteType:routeType = (iParams >= 4) ? NavRouteType:get_param(4) : NAV_ROUTE_FASTEST;
     
     if(!IsValidArea(iStartArea) || !IsValidArea(iGoalArea))
         return false;
@@ -347,7 +356,7 @@ public bool:native_build_path_from_area(const pPluginID, const iParams)
         return false;
     
     ArrayClear(aPathOut);
-    return BuildPathAStar(iStartArea, iGoalArea, aPathOut);
+    return BuildPathAStar(iStartArea, iGoalArea, aPathOut, routeType);
 }
 
 public bool:native_build_path(const pPluginID, const iParams)
@@ -359,6 +368,7 @@ public bool:native_build_path(const pPluginID, const iParams)
     get_array_f(arg_goal, vGoal, 3);
 
     new Array:aPathOut = Array:get_param(arg_pathout);
+    new NavRouteType:routeType = (iParams >= 4) ? NavRouteType:get_param(4) : NAV_ROUTE_FASTEST;
     if(aPathOut == Invalid_Array)
         return false;
     
@@ -370,7 +380,7 @@ public bool:native_build_path(const pPluginID, const iParams)
         return false;
     
     ArrayClear(aPathOut);
-    return BuildPathAStar(iStartArea, iGoalArea, aPathOut);
+    return BuildPathAStar(iStartArea, iGoalArea, aPathOut, routeType);
 }
 
 public native_get_path_length(const pPluginID, const iParams)
@@ -792,6 +802,8 @@ public NavErrorType:LoadInternal(const szMapName[])
     for(new i = 0; i < g_iNavAreaCount; i++)
         PostLoadArea(i);
     
+    NavmeshBotPath_BumpGeneration();
+    
     log_amx("[NavMesh] Loaded successfully: %d areas", g_iNavAreaCount);
     return NAV_OK;
 }
@@ -853,6 +865,8 @@ public UnloadInternal()
     g_bNavLoaded = false;
     g_iNavAreaCount = 0;
     g_iNextAreaID = 1;
+    
+    NavmeshBotPath_BumpGeneration();
 }
 
 public bool:InitEmpty()
@@ -876,6 +890,7 @@ public bool:InitEmpty()
     g_iNavAreaCount = 0;
     g_iNextAreaID = 1;
     g_bNavLoaded = true;
+    NavmeshBotPath_BumpGeneration();
     
     log_amx("[NavMesh] Initialized empty navmesh for editing");
     return true;
@@ -1385,7 +1400,14 @@ stock Array:GetAreaConnectArray(const sArea[NavArea], NavDirType:dir)
 // ============================================================================
 // Pathfinding A*
 // ============================================================================
-public bool:BuildPathAStar(iStartArea, iGoalArea, Array:aPathOut)
+enum _:AStarHeapNode
+{
+    Float:HEAP_NODE_F_COST,
+    Float:HEAP_NODE_H_COST,
+    HEAP_NODE_AREA
+};
+
+public bool:BuildPathAStar(iStartArea, iGoalArea, Array:aPathOut, NavRouteType:routeType = NAV_ROUTE_FASTEST)
 {
     if(iStartArea == iGoalArea)
         return false;
@@ -1398,15 +1420,16 @@ public bool:BuildPathAStar(iStartArea, iGoalArea, Array:aPathOut)
     new sArea[NavArea];
     ArrayGetArray(g_aNavAreas, iStartArea, sArea);
     sArea[NAV_AREA_COST_SO_FAR] = 0.0;
-    sArea[NAV_AREA_TOTAL_COST] = Math_GetHeuristicCost(iStartArea, iGoalArea);
+    new Float:fStartHeuristic = Math_GetHeuristicCost(iStartArea, iGoalArea);
+    sArea[NAV_AREA_TOTAL_COST] = fStartHeuristic;
     sArea[NAV_AREA_PARENT] = Invalid_Area;
     sArea[NAV_AREA_MARKER] = iMasterMarker;
-    sArea[NAV_AREA_OPEN_MARKER] = iMasterMarker;
+    sArea[NAV_AREA_OPEN_MARKER] = 0;
     ArraySetArray(g_aNavAreas, iStartArea, sArea);
     
-    // Simple open list (index array)
-    new Array:aOpenList = ArrayCreate();
-    ArrayPushCell(aOpenList, iStartArea);
+    // Open list as binary heap
+    new Array:aOpenList = ArrayCreate(AStarHeapNode);
+    HeapPushArea(aOpenList, iStartArea, fStartHeuristic, fStartHeuristic);
     
     new bool:bPathFound = false;
     new iIterations = 0;
@@ -1416,11 +1439,18 @@ public bool:BuildPathAStar(iStartArea, iGoalArea, Array:aPathOut)
     {
         iIterations++;
         
-        // Find area with lowest total cost in open list
-        new iCurrentArea = PopLowestCostArea(aOpenList);
+        // Pop area with lowest total cost from heap
+        new Float:fPoppedCost;
+        new iCurrentArea = HeapPopArea(aOpenList, fPoppedCost);
         
         if(iCurrentArea == Invalid_Area)
             break;
+        
+        ArrayGetArray(g_aNavAreas, iCurrentArea, sArea);
+        
+        // Skip stale heap entries
+        if(floatabs(fPoppedCost - sArea[NAV_AREA_TOTAL_COST]) > 0.0001)
+            continue;
         
         // Did we reach the goal?
         if(iCurrentArea == iGoalArea)
@@ -1430,8 +1460,6 @@ public bool:BuildPathAStar(iStartArea, iGoalArea, Array:aPathOut)
         }
         
         // Explore neighbors
-        ArrayGetArray(g_aNavAreas, iCurrentArea, sArea);
-        
         for(new NavDirType:dir = NAV_DIR_NORTH; dir < NUM_NAV_DIRECTIONS; dir++)
         {
             new Array:aConnect = GetAreaConnectArray(sArea, dir);
@@ -1451,22 +1479,18 @@ public bool:BuildPathAStar(iStartArea, iGoalArea, Array:aPathOut)
                 ArrayGetArray(g_aNavAreas, iNeighborArea, sNeighbor);
                 
                 // Calculate new cost
-                new Float:fNewCost = sArea[NAV_AREA_COST_SO_FAR] + Math_GetMoveCost(iCurrentArea, iNeighborArea);
+                new Float:fNewCost = sArea[NAV_AREA_COST_SO_FAR] + Math_GetMoveCost(iCurrentArea, iNeighborArea, routeType);
                 
                 // If not visited or we found a better path
                 if(sNeighbor[NAV_AREA_MARKER] != iMasterMarker || fNewCost < sNeighbor[NAV_AREA_COST_SO_FAR])
                 {
+                    new Float:fHeuristicCost = Math_GetHeuristicCost(iNeighborArea, iGoalArea);
                     sNeighbor[NAV_AREA_COST_SO_FAR] = fNewCost;
-                    sNeighbor[NAV_AREA_TOTAL_COST] = fNewCost + Math_GetHeuristicCost(iNeighborArea, iGoalArea);
+                    sNeighbor[NAV_AREA_TOTAL_COST] = fNewCost + fHeuristicCost;
                     sNeighbor[NAV_AREA_PARENT] = iCurrentArea;
                     sNeighbor[NAV_AREA_MARKER] = iMasterMarker;
-                    
-                    // Add to open list if not there
-                    if(sNeighbor[NAV_AREA_OPEN_MARKER] != iMasterMarker)
-                    {
-                        sNeighbor[NAV_AREA_OPEN_MARKER] = iMasterMarker;
-                        ArrayPushCell(aOpenList, iNeighborArea);
-                    }
+                    sNeighbor[NAV_AREA_OPEN_MARKER] = 0;
+                    HeapPushArea(aOpenList, iNeighborArea, sNeighbor[NAV_AREA_TOTAL_COST], fHeuristicCost);
                     
                     ArraySetArray(g_aNavAreas, iNeighborArea, sNeighbor);
                 }
@@ -1526,29 +1550,103 @@ public bool:BuildPathAStar(iStartArea, iGoalArea, Array:aPathOut)
     return true;
 }
 
-stock PopLowestCostArea(Array:aOpenList)
+stock bool:HeapNodeLess(const sLeft[AStarHeapNode], const sRight[AStarHeapNode])
 {
-    if(ArraySize(aOpenList) == 0)
+    if(sLeft[HEAP_NODE_F_COST] < sRight[HEAP_NODE_F_COST])
+        return true;
+    
+    if(sLeft[HEAP_NODE_F_COST] > sRight[HEAP_NODE_F_COST])
+        return false;
+    
+    if(sLeft[HEAP_NODE_H_COST] < sRight[HEAP_NODE_H_COST])
+        return true;
+    
+    if(sLeft[HEAP_NODE_H_COST] > sRight[HEAP_NODE_H_COST])
+        return false;
+    
+    return sLeft[HEAP_NODE_AREA] < sRight[HEAP_NODE_AREA];
+}
+
+stock HeapPushArea(Array:aHeap, iArea, Float:fCost, Float:fHeuristic)
+{
+    new sNode[AStarHeapNode];
+    sNode[HEAP_NODE_F_COST] = fCost;
+    sNode[HEAP_NODE_H_COST] = fHeuristic;
+    sNode[HEAP_NODE_AREA] = iArea;
+    
+    ArrayPushArray(aHeap, sNode);
+    
+    new iIndex = ArraySize(aHeap) - 1;
+    while(iIndex > 0)
+    {
+        new iParent = (iIndex - 1) / 2;
+        
+        new sParent[AStarHeapNode], sChild[AStarHeapNode];
+        ArrayGetArray(aHeap, iParent, sParent);
+        ArrayGetArray(aHeap, iIndex, sChild);
+        
+        if(HeapNodeLess(sParent, sChild))
+            break;
+        
+        ArraySetArray(aHeap, iParent, sChild);
+        ArraySetArray(aHeap, iIndex, sParent);
+        iIndex = iParent;
+    }
+}
+
+stock HeapPopArea(Array:aHeap, &Float:fCostOut)
+{
+    new iSize = ArraySize(aHeap);
+    if(iSize == 0)
         return Invalid_Area;
     
-    new iLowestIndex, i, iArea;
-    new Float:fLowestCost = 999999.9;
-    new sArea[NavArea];
+    new sRoot[AStarHeapNode];
+    ArrayGetArray(aHeap, 0, sRoot);
+    fCostOut = sRoot[HEAP_NODE_F_COST];
+    new iResult = sRoot[HEAP_NODE_AREA];
     
-    for(i = 0; i < ArraySize(aOpenList); i++)
+    if(iSize == 1)
     {
-        iArea = ArrayGetCell(aOpenList, i);
-        ArrayGetArray(g_aNavAreas, iArea, sArea);
-        
-        if(sArea[NAV_AREA_TOTAL_COST] < fLowestCost)
-        {
-            fLowestCost = sArea[NAV_AREA_TOTAL_COST];
-            iLowestIndex = i;
-        }
+        ArrayDeleteItem(aHeap, 0);
+        return iResult;
     }
     
-    new iResult = ArrayGetCell(aOpenList, iLowestIndex);
-    ArrayDeleteItem(aOpenList, iLowestIndex);
+    new sLast[AStarHeapNode];
+    ArrayGetArray(aHeap, iSize - 1, sLast);
+    ArraySetArray(aHeap, 0, sLast);
+    ArrayDeleteItem(aHeap, iSize - 1);
+    iSize--;
+    
+    new iIndex = 0;
+    while(true)
+    {
+        new iLeft = iIndex * 2 + 1;
+        if(iLeft >= iSize)
+            break;
+        
+        new iRight = iLeft + 1;
+        new iSmallest = iLeft;
+        
+        new sSmallest[AStarHeapNode], sRight[AStarHeapNode];
+        ArrayGetArray(aHeap, iLeft, sSmallest);
+        
+        if(iRight < iSize)
+        {
+            ArrayGetArray(aHeap, iRight, sRight);
+            if(HeapNodeLess(sRight, sSmallest))
+                iSmallest = iRight;
+        }
+        
+        new sCurrent[AStarHeapNode];
+        ArrayGetArray(aHeap, iIndex, sCurrent);
+        ArrayGetArray(aHeap, iSmallest, sSmallest);
+        if(HeapNodeLess(sCurrent, sSmallest))
+            break;
+        
+        ArraySetArray(aHeap, iIndex, sSmallest);
+        ArraySetArray(aHeap, iSmallest, sCurrent);
+        iIndex = iSmallest;
+    }
     
     return iResult;
 }
@@ -1763,7 +1861,11 @@ public native_create_area(const pPluginID, const iParams)
     get_array_f(1, vMins, 3);
     get_array_f(2, vMaxs, 3);
     
-    return CreateAreaInternal(vMins, vMaxs);
+    new iArea = CreateAreaInternal(vMins, vMaxs);
+    if(iArea != Invalid_Area)
+        NavmeshBotPath_BumpGeneration();
+    
+    return iArea;
 }
 
 public bool:native_delete_area(const pPluginID, const iParams)
@@ -1773,7 +1875,11 @@ public bool:native_delete_area(const pPluginID, const iParams)
     if(!IsValidArea(iAreaIndex))
         return false;
     
-    return DeleteAreaInternal(iAreaIndex);
+    new bool:bDeleted = DeleteAreaInternal(iAreaIndex);
+    if(bDeleted)
+        NavmeshBotPath_BumpGeneration();
+    
+    return bDeleted;
 }
 
 public bool:native_set_area_attributes(const pPluginID, const iParams)
@@ -1788,6 +1894,7 @@ public bool:native_set_area_attributes(const pPluginID, const iParams)
     ArrayGetArray(g_aNavAreas, iAreaIndex, sArea);
     sArea[NAV_AREA_ATTRIBUTES] = attrs;
     ArraySetArray(g_aNavAreas, iAreaIndex, sArea);
+    NavmeshBotPath_BumpGeneration();
     
     return true;
 }
@@ -1801,7 +1908,11 @@ public bool:native_connect_areas(const pPluginID, const iParams)
     if(!IsValidArea(iFromArea) || !IsValidArea(iToArea))
         return false;
     
-    return ConnectAreasInternal(iFromArea, iToArea, dir);
+    new bool:bConnected = ConnectAreasInternal(iFromArea, iToArea, dir);
+    if(bConnected)
+        NavmeshBotPath_BumpGeneration();
+    
+    return bConnected;
 }
 
 public bool:native_disconnect_areas(const pPluginID, const iParams)
@@ -1813,7 +1924,11 @@ public bool:native_disconnect_areas(const pPluginID, const iParams)
     if(!IsValidArea(iFromArea) || !IsValidArea(iToArea))
         return false;
     
-    return DisconnectAreasInternal(iFromArea, iToArea, dir);
+    new bool:bDisconnected = DisconnectAreasInternal(iFromArea, iToArea, dir);
+    if(bDisconnected)
+        NavmeshBotPath_BumpGeneration();
+    
+    return bDisconnected;
 }
 
 public bool:native_set_corner_z(const pPluginID, const iParams)
@@ -1825,7 +1940,11 @@ public bool:native_set_corner_z(const pPluginID, const iParams)
     if(!IsValidArea(iAreaIndex) || corner >= NUM_NAV_CORNERS)
         return false;
     
-    return SetCornerZInternal(iAreaIndex, corner, fZ);
+    new bool:bSet = SetCornerZInternal(iAreaIndex, corner, fZ);
+    if(bSet)
+        NavmeshBotPath_BumpGeneration();
+    
+    return bSet;
 }
 
 public bool:native_set_area_extent(const pPluginID, const iParams)
@@ -1837,7 +1956,11 @@ public bool:native_set_area_extent(const pPluginID, const iParams)
     if(!IsValidArea(iAreaIndex) || dir >= NUM_NAV_DIRECTIONS)
         return false;
     
-    return SetAreaExtentInternal(iAreaIndex, dir, fAmount);
+    new bool:bSet = SetAreaExtentInternal(iAreaIndex, dir, fAmount);
+    if(bSet)
+        NavmeshBotPath_BumpGeneration();
+    
+    return bSet;
 }
 
 public bool:native_save(const pPluginID, const iParams)
@@ -2391,7 +2514,11 @@ public native_split_area(const pPluginID, const iParams)
     new NavDirType:splitDir = NavDirType:get_param(2);
     new Float:fSplitPos = get_param_f(3);
     
-    return SplitAreaInternal(iAreaIndex, splitDir, fSplitPos);
+    new iArea = SplitAreaInternal(iAreaIndex, splitDir, fSplitPos);
+    if(iArea != Invalid_Area)
+        NavmeshBotPath_BumpGeneration();
+    
+    return iArea;
 }
 
 public native_merge_areas(const pPluginID, const iParams)
@@ -2399,7 +2526,11 @@ public native_merge_areas(const pPluginID, const iParams)
     new iArea1 = get_param(1);
     new iArea2 = get_param(2);
     
-    return MergeAreasInternal(iArea1, iArea2);
+    new iArea = MergeAreasInternal(iArea1, iArea2);
+    if(iArea != Invalid_Area)
+        NavmeshBotPath_BumpGeneration();
+    
+    return iArea;
 }
 
 public native_splice_areas(const pPluginID, const iParams)
@@ -2407,7 +2538,11 @@ public native_splice_areas(const pPluginID, const iParams)
     new iArea1 = get_param(1);
     new iArea2 = get_param(2);
     
-    return SpliceAreasInternal(iArea1, iArea2);
+    new iArea = SpliceAreasInternal(iArea1, iArea2);
+    if(iArea != Invalid_Area)
+        NavmeshBotPath_BumpGeneration();
+    
+    return iArea;
 }
 
 // Splits an area in two along a direction
@@ -2718,7 +2853,7 @@ stock Float:Math_GetHeuristicCost(iFromArea, iToArea)
     return floatsqroot(fDX * fDX + fDY * fDY);
 }
 
-Float:Math_GetMoveCost(iFromArea, iToArea)
+Float:Math_GetMoveCost(iFromArea, iToArea, NavRouteType:routeType = NAV_ROUTE_FASTEST)
 {
     // Base cost is distance
     new Float:fCost = Math_GetHeuristicCost(iFromArea, iToArea);
@@ -2732,6 +2867,15 @@ Float:Math_GetMoveCost(iFromArea, iToArea)
     
     if(sTo[NAV_AREA_ATTRIBUTES] & NAV_ATTR_JUMP)
         fCost *= 1.5; // Jumping has extra cost
+    
+    if(routeType == NAV_ROUTE_SAFEST)
+    {
+        if(sTo[NAV_AREA_ATTRIBUTES] & NAV_ATTR_PRECISE)
+            fCost *= 1.2;
+        
+        if(sTo[NAV_AREA_ATTRIBUTES] & NAV_ATTR_NO_JUMP)
+            fCost *= 1.2;
+    }
     
     return fCost;
 }
